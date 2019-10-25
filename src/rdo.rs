@@ -530,14 +530,14 @@ pub fn compute_distortion_bias<T: Pixel>(
 
   let mut bias = (mean_importance / FACTOR) as f64 + ADDEND;
 
-  // if bsize == BlockSize::BLOCK_8X8 && pli == 0 && fi.frame_type == FrameType::KEY {
-  //   const ACTIVITY_SCALE: f64 = 0.15;
-  //   const ACTIVITY_ADDEND: f64 = 0.25;
-  //   if let Some(activity) = compute_activity(fi, frame_bo, bsize) {
-  //     bias /= (ACTIVITY_SCALE * activity.min(ACTIVITY_MAX).max(ACTIVITY_MIN))
-  //       + ACTIVITY_ADDEND;
-  //   }
-  // }
+  if bsize == BlockSize::BLOCK_8X8 && pli == 0 && fi.frame_type == FrameType::KEY {
+    const ACTIVITY_SCALE: f64 = 0.10;
+    const ACTIVITY_ADDEND: f64 = 0.55;
+    if let Some(activity) = compute_activity(fi, frame_bo, bsize) {
+      bias /= (ACTIVITY_SCALE * activity.min(ACTIVITY_MAX).max(ACTIVITY_MIN))
+        + ACTIVITY_ADDEND;
+    }
+  }
 
   debug_assert!(bias.is_finite());
 
